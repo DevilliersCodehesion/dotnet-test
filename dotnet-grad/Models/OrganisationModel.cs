@@ -6,24 +6,20 @@ namespace dotnet_grad.Models
 {
   public class OrganisationModel
   {
-    public OrganisationModel(string name, string logo, int registration_number)
+    public OrganisationModel(string name, string logo, string registrationNumber)
     {
-      this.name = name;
-      this.logo = logo;
+      Name = name;
+      Logo = logo;
 
-      this.registration_number = registration_number;
+      RegistrationNumber = registrationNumber;
     }
 
-    [Key] public int id { get; set; }
-    public string name { get; set; }
-    public string logo { get; set; }
+    [Key] public int Id { get; set; }
+    public string Name { get; set; }
+    public string Logo { get; set; }
 
-    public AddressModel adress_model
-    {
-      get;
-    }
-    public int registration_number { get; set; }
-
+    public AddressModel AdressModel { get; set; }
+    public string RegistrationNumber { get; set; }
 
   }
 }

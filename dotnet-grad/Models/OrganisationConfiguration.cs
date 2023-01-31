@@ -11,7 +11,7 @@ namespace dotnet_grad.Models
   {
     public void Configure(EntityTypeBuilder<OrganisationModel> builder)
     {
-      builder.OwnsOne(x => x.adress_model);
+      builder.OwnsOne(x => x.AdressModel);
     }
   }
 }
