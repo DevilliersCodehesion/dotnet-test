@@ -5,7 +5,7 @@ namespace dotnet_grad.Models
 {
   public class UserModel
   {
-    public UserModel(string name, string surname, int id_number, string full_name, string email, string username)
+    public UserModel(string name, string surname, string id_number, string full_name, string email, string username)
     {
       this.name = name;
       this.surname = surname;
@@ -18,7 +18,7 @@ namespace dotnet_grad.Models
     [Key] public int id { get; set; }
     public string name { get; set; }
     public string surname { get; set; }
-    public int id_number { get; set; }
+    public string id_number { get; set; }
     public string full_name { get; set; }
     public string email { get; set; }
     public string username { get; set; }

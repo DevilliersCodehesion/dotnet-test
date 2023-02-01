@@ -9,6 +9,7 @@ namespace dotnet_grad.Models
     public DbSet<UserModel> Users { get; set; }
     public DbSet<OrganisationModel> Organisations { get; set; }
     public DbSet<AddressModel> Addresses { get; set; }
+    public DbSet<UserInfo> UserInfo { get; set; }
 
     public string DbPath { get; }
     public TestContext()

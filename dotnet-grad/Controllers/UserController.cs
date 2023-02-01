@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using dotnet_grad.Interface;
 using dotnet_grad.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_grad.Controllers
@@ -13,37 +15,63 @@ namespace dotnet_grad.Controllers
   public class UserController : ControllerBase
   {
     TestContext testContext;
-    public UserController(TestContext _testContext)
+    private readonly IUsers _IUser;
+    public UserController(TestContext _testContext, IUsers Iuser)
     {
       testContext = _testContext;
+      _IUser = Iuser;
     }
 
-    [HttpGet("GetAllUsers")]
-    public List<UserModel> getUsers()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserModel>>> getUsers()
     {
-      return testContext.Users.ToList();
+      return await _IUser.GetUsersDetails();
     }
 
     [HttpGet("{id}")]
-    public ActionResult<UserModel> getUser(int id)
+    public async Task<ActionResult<UserModel>> getUser(int id)
     {
+      var user = await _IUser.GetUserDetails(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
+      return user;
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<UserModel>> createUser([FromBody] UserModel user)
+    {
+      UserModel createdUser = await _IUser.AddUser(user);
+      return createdUser;
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserModel user)
+    {
+      if (id != user.id)
+      {
+        return BadRequest();
+      }
       try
       {
-        UserModel user = testContext.Users.Find(id);
-        return Ok(user);
+        UserModel updatedUser = await _IUser.UpdateUser(user);
+        return updatedUser;
       }
-      catch (Exception e)
+      catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
       {
-        return NotFound("user not found");
+        if (_IUser.CheckUser(id))
+        {
+          return NotFound();
+        }
+        else
+        {
+          throw;
+        }
       }
     }
 
-    [HttpPost("createUser")]
-    public async Task<ActionResult<UserModel>> createUser(UserModel userModel)
-    {
-      testContext.Add(userModel);
-      await testContext.SaveChangesAsync();
-      return CreatedAtAction("GetUser", new { id = userModel.id }, userModel);
-    }
   }
 }
