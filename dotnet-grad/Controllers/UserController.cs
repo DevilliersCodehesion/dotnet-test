@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using dotnet_grad.Dtos.Request;
+using dotnet_grad.Dtos.Response;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,42 +25,42 @@ namespace dotnet_grad.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserModel>>> getUsers()
+    public async Task<ActionResult<IEnumerable<UserResponseDto>>> getUsers()
     {
-      return await _IUser.GetUsersDetails();
+      List<UserModel> users = await _IUser.GetUsersDetails();
+      IEnumerable<UserResponseDto> dto = users.Select(x => new UserResponseDto(x.name, x.surname, x.full_name, x.email));
+      return Ok(dto);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserModel>> getUser(int id)
+    public async Task<ActionResult<UserResponseDto>> getUser(int id)
     {
-      var user = await _IUser.GetUserDetails(id);
+      UserModel user = await _IUser.GetUserDetails(id);
       if (user == null)
       {
         return NotFound();
       }
-      return user;
+      return Ok(new UserResponseDto(user.name, user.surname, user.full_name, user.email));
     }
 
-    [Authorize]
     [HttpPost]
-    public async Task<ActionResult<UserModel>> createUser([FromBody] UserModel user)
+    public async Task<ActionResult<UserModel>> createUser([FromBody] UserRequestDto user)
     {
-      UserModel createdUser = await _IUser.AddUser(user);
-      return createdUser;
+      UserModel userModel = new UserModel(user.Name, user.Surname, user.IdNumber, user.FullName, user.Email, user.Username);
+      UserModel createdUser = await _IUser.AddUser(userModel);
+      return Ok(new UserResponseDto(createdUser.name, createdUser.surname, createdUser.full_name, createdUser.email));
     }
 
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserModel user)
+    public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserRequestDto user)
     {
-      if (id != user.id)
-      {
-        return BadRequest();
-      }
+      UserModel userModel = new UserModel(user.Name, user.Surname, user.IdNumber, user.FullName, user.Email, user.Username);
+      userModel.id = id;
       try
       {
-        UserModel updatedUser = await _IUser.UpdateUser(user);
-        return updatedUser;
+        UserModel updatedUser = await _IUser.UpdateUser(userModel);
+        return Ok(new UserResponseDto(updatedUser.name, updatedUser.surname, updatedUser.full_name, updatedUser.email));
       }
       catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
       {

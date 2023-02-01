@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using dotnet_grad.Dtos.Request;
+using dotnet_grad.Dtos.Response;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
 using dotnet_grad.Repository;
@@ -28,17 +30,19 @@ namespace dotnet_grad.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserInfo>>> getUserInfo()
+    public async Task<ActionResult<IEnumerable<UserInfoResponseDto>>> getUserInfo()
     {
-      return await _tokenRepository.getUserInfo();
+      List<UserInfo> users = await _tokenRepository.getUserInfo();
+      IEnumerable<UserInfoResponseDto> dto = users.Select(x => new UserInfoResponseDto(x.Email));
+      return Ok(dto);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateToken([FromBody] UserInfo _userInfo)
     {
-      if (_userInfo != null && _userInfo.password != null && _userInfo.email != null)
+      if (_userInfo != null && _userInfo.Password != null && _userInfo.Email != null)
       {
-        var user = await _tokenRepository.getUserToken(_userInfo.email, _userInfo.password);
+        var user = await _tokenRepository.getUserToken(_userInfo.Email, _userInfo.Password);
         if (user != null)
         {
           var claims = new[] {
@@ -46,8 +50,8 @@ namespace dotnet_grad.Controllers
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim("UserId", user.Id.ToString()),
-            new Claim("DisplayName", user.email),
-            new Claim("Email", user.email),
+            new Claim("DisplayName", user.Email),
+            new Claim("Email", user.Email),
           };
 
           var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -67,9 +71,10 @@ namespace dotnet_grad.Controllers
     }
 
     [HttpPost("addUserInfo")]
-    public async Task<ActionResult<UserInfo>> createUserInfo([FromBody] UserInfo userInfo)
+    public async Task<ActionResult<UserInfoResponseDto>> createUserInfo([FromBody] UserInfo userInfo)
     {
-      return await _tokenRepository.addUserInfo(userInfo);
+      UserInfo createdUser = await _tokenRepository.addUserInfo(userInfo);
+      return new UserInfoResponseDto(createdUser);
     }
 
   }

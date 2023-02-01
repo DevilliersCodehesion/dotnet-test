@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_grad.Dtos.Response;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace dotnet_grad.Repository
 
     public async Task<UserInfo> getUserToken(string email, string password)
     {
-      return await _testContext.UserInfo.FirstOrDefaultAsync(u => u.email == email && u.password == password);
+      return await _testContext.UserInfo.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
     }
 
 

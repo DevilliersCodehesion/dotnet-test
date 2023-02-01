@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_grad.Dtos.Request;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,7 @@ namespace dotnet_grad.Repository
 
     public async Task<UserModel> AddUser(UserModel user)
     {
+
       await _testContext.Users.AddAsync(user);
       await _testContext.SaveChangesAsync();
       UserModel createdUser = await _testContext.Users.FindAsync(user.id);
