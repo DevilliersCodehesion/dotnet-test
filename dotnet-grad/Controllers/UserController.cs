@@ -7,8 +7,11 @@ using dotnet_grad.Dtos.Request;
 using dotnet_grad.Dtos.Response;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Resources.Commands;
+using Resources.Queries;
 
 namespace dotnet_grad.Controllers
 {
@@ -18,62 +21,59 @@ namespace dotnet_grad.Controllers
   {
     TestContext testContext;
     private readonly IUsers _IUser;
-    public UserController(TestContext _testContext, IUsers Iuser)
+    private readonly IMediator _mediator;
+    public UserController(TestContext _testContext, IUsers Iuser, IMediator mediator)
     {
       testContext = _testContext;
       _IUser = Iuser;
+      _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserResponseDto>>> getUsers()
     {
-      List<UserModel> users = await _IUser.GetUsersDetails();
-      IEnumerable<UserResponseDto> dto = users.Select(x => new UserResponseDto(x.name, x.surname, x.full_name, x.email));
-      return Ok(dto);
+      var query = new GetAllUsersQuery();
+      var response = await _mediator.Send(query);
+      return Ok(response);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponseDto>> getUser(int id)
     {
-      UserModel user = await _IUser.GetUserDetails(id);
-      if (user == null)
+      var query = new GetUserByIdQuery(id);
+      var response = await _mediator.Send(query);
+      if (response == null)
       {
         return NotFound();
       }
-      return Ok(new UserResponseDto(user.name, user.surname, user.full_name, user.email));
+      return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<UserModel>> createUser([FromBody] UserRequestDto user)
     {
-      UserModel userModel = new UserModel(user.Name, user.Surname, user.IdNumber, user.FullName, user.Email, user.Username);
-      UserModel createdUser = await _IUser.AddUser(userModel);
-      return Ok(new UserResponseDto(createdUser.name, createdUser.surname, createdUser.full_name, createdUser.email));
+      var command = new CreateUserCommand(user);
+      var response = await _mediator.Send(command);
+
+      return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
     }
 
 
     [HttpPut("{id}")]
     public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserRequestDto user)
     {
-      UserModel userModel = new UserModel(user.Name, user.Surname, user.IdNumber, user.FullName, user.Email, user.Username);
-      userModel.id = id;
+      var command = new UpdateUserCommand(id, user);
+      var response = await _mediator.Send(command);
       try
       {
-        UserModel updatedUser = await _IUser.UpdateUser(userModel);
-        return Ok(new UserResponseDto(updatedUser.name, updatedUser.surname, updatedUser.full_name, updatedUser.email));
+        return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
       }
       catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
       {
-        if (_IUser.CheckUser(id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          throw;
-        }
+        return NotFound();
       }
-    }
 
+    }
   }
+
 }

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using dotnet_grad.Dtos.Request;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Resources.Queries;
 
 namespace dotnet_grad.Repository
 {
@@ -45,11 +47,11 @@ namespace dotnet_grad.Repository
       return createdUser;
     }
 
-    public async Task<UserModel> UpdateUser(UserModel user)
+    public async Task<UserModel> UpdateUser(int id, UserModel user)
     {
       _testContext.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
       await _testContext.SaveChangesAsync();
-      UserModel returnedUser = await _testContext.Users.FindAsync(user.id);
+      UserModel returnedUser = await _testContext.Users.FindAsync(id);
       return returnedUser;
     }
 

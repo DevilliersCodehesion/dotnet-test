@@ -7,6 +7,7 @@ using dotnet_grad.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TestContext>();
 builder.Services.AddTransient<IUsers, UserRepository>();
 builder.Services.AddTransient<IToken, TokenRepository>();
+builder.Services.AddMediatR(typeof(Program).Assembly);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
