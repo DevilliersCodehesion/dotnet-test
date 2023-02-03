@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
-using dotnet_grad.Models;
+using dotnet_grad.Dtos.Response;
 using MediatR;
 
 namespace Resources.Commands
 {
-  public class UpdateUserCommand : IRequest<User>
+  public class UpdateUserCommand : IRequest<UserResponseDto>
   {
 
     public UpdateUserCommand(int id, UserRequestDto user)

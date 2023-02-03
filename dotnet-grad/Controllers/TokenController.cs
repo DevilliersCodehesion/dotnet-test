@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLogicLayers.Interfaces;
+using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
 using dotnet_grad.Dtos.Response;
-using dotnet_grad.Interface;
-using dotnet_grad.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,9 +19,9 @@ namespace dotnet_grad.Controllers
   public class TokenController : ControllerBase
   {
     public IConfiguration _configuration;
-    private readonly TestContext _testContext;
-    private readonly IToken _tokenRepository;
-    public TokenController(IConfiguration config, TestContext testContext, IToken tokenRepo)
+    private readonly DatabaseContext _testContext;
+    private readonly ITokenRepository _tokenRepository;
+    public TokenController(IConfiguration config, DatabaseContext testContext, ITokenRepository tokenRepo)
     {
       _configuration = config;
       _testContext = testContext;

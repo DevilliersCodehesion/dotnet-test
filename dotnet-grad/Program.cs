@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using dotnet_grad.Models;
 using dotnet_grad.Controllers;
-using dotnet_grad.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,7 +25,6 @@ builder.Services.AddControllers().AddFluentValidation(options =>
                   // Validate child properties and root collection elements
                   options.ImplicitlyValidateChildProperties = true;
                   options.ImplicitlyValidateRootCollectionElements = true;
-
                   // Automatic registration of validators in assembly
                   options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });

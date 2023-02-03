@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 using FluentValidation;
-using dotnet_grad.Models;
 using dotnet_grad.Dtos.Request;
 
 namespace dotnet_grad.Validators

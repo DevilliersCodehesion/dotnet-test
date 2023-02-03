@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dotnet_grad.Models;
+using DataAccessLayer.Models;
 
 namespace dotnet_grad.Dtos.Request
 {

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
 using dotnet_grad.Dtos.Response;
-using dotnet_grad.Interface;
-using dotnet_grad.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +18,9 @@ namespace dotnet_grad.Controllers
   [Route("api/[controller]")]
   public class UserController : ControllerBase
   {
-    TestContext testContext;
+    DatabaseContext testContext;
     private readonly IMediator _mediator;
-    public UserController(TestContext _testContext, IMediator mediator)
+    public UserController(DatabaseContext _testContext, IMediator mediator)
     {
       testContext = _testContext;
       _mediator = mediator;
@@ -50,21 +49,20 @@ namespace dotnet_grad.Controllers
 
     [Authorize(Policy = "admin")]
     [HttpPost]
-    public async Task<ActionResult<UserModel>> createUser([FromBody] UserRequestDto user)
+    public async Task<ActionResult<UserResponseDto>> createUser([FromBody] UserRequestDto user)
     {
       // if (!ModelState.IsValid)
       // {
       var command = new CreateUserCommand(user);
       var response = await _mediator.Send(command);
-
-      return Ok(new UserResponseDto(response.Name, response.Surname, response.Fullname, response.Email));
+      return Ok(response);
       // }
 
     }
 
     [Authorize(Policy = "admin")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserRequestDto user)
+    public async Task<ActionResult<UserResponseDto>> updateUser(int id, [FromBody] UserRequestDto user)
     {
       if (!ModelState.IsValid)
       {
@@ -72,7 +70,7 @@ namespace dotnet_grad.Controllers
         var response = await _mediator.Send(command);
         try
         {
-          return Ok(new UserResponseDto(response.Name, response.Surname, response.Fullname, response.Email));
+          return Ok(response);
         }
         catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
         {

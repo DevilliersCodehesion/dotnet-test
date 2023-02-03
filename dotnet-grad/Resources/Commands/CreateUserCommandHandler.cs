@@ -2,29 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dotnet_grad.Interface;
-using dotnet_grad.Models;
 using MediatR;
 using BusinessLogicLayers.Interfaces;
 using DataAccessLayer.Models;
+using dotnet_grad.Dtos.Response;
+using dotnet_grad.Dtos.Request;
 
 namespace Resources.Commands
 {
-  public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
+  public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserResponseDto>
   {
-    private readonly TestContext _testContext;
+    private readonly DatabaseContext _testContext;
     private readonly IUserRepository _userRepository;
-    public CreateUserCommandHandler(TestContext testContext, IUserRepository userRepository)
+    public CreateUserCommandHandler(DatabaseContext testContext, IUserRepository userRepository)
     {
       _testContext = testContext;
       _userRepository = userRepository;
     }
 
-    public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<UserResponseDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
       User user = new User(request.Name, request.Surname, request.IdNumber, request.Fullname, request.Email, request.Username);
       await _userRepository.AddUser(user);
-      return user;
+      UserResponseDto createdUser = new UserResponseDto(request.Name, request.Surname, request.Fullname, request.Email);
+      return createdUser;
     }
   }
 }

@@ -1,10 +1,11 @@
 using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
+using dotnet_grad.Dtos.Response;
 using MediatR;
 
 namespace Resources.Commands
 {
-  public class CreateUserCommand : IRequest<User>
+  public class CreateUserCommand : IRequest<UserResponseDto>
   {
     public CreateUserCommand(UserRequestDto user)
     {
