@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using dotnet_grad.Models;
 using dotnet_grad.Controllers;
-using dotnet_grad.Repository;
 using dotnet_grad.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +10,9 @@ using MediatR;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using DataAccessLayer.Models;
+using BusinessLogicLayers.Interfaces;
+using BusinessLogicLayers.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,9 +34,9 @@ builder.Services.AddControllers().AddFluentValidation(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<TestContext>();
-builder.Services.AddTransient<IUsers, UserRepository>();
-builder.Services.AddTransient<IToken, TokenRepository>();
+builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 builder.Services.AddMediatR(typeof(Program).Assembly);
 
 builder.Services.AddAuthorization(options =>

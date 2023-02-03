@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
-using dotnet_grad.Models;
 using MediatR;
 
 namespace Resources.Commands
 {
-  public class CreateUserCommand : IRequest<UserModel>
+  public class CreateUserCommand : IRequest<User>
   {
     public CreateUserCommand(UserRequestDto user)
     {

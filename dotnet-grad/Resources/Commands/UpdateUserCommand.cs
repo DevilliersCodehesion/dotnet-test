@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccessLayer.Models;
 using dotnet_grad.Dtos.Request;
 using dotnet_grad.Models;
 using MediatR;
 
 namespace Resources.Commands
 {
-  public class UpdateUserCommand : IRequest<UserModel>
+  public class UpdateUserCommand : IRequest<User>
   {
 
     public UpdateUserCommand(int id, UserRequestDto user)

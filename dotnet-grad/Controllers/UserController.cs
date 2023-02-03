@@ -57,7 +57,7 @@ namespace dotnet_grad.Controllers
       var command = new CreateUserCommand(user);
       var response = await _mediator.Send(command);
 
-      return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
+      return Ok(new UserResponseDto(response.Name, response.Surname, response.Fullname, response.Email));
       // }
 
     }
@@ -72,7 +72,7 @@ namespace dotnet_grad.Controllers
         var response = await _mediator.Send(command);
         try
         {
-          return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
+          return Ok(new UserResponseDto(response.Name, response.Surname, response.Fullname, response.Email));
         }
         catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
         {

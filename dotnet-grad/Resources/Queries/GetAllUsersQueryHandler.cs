@@ -1,27 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BusinessLogicLayers.Interfaces;
+using DataAccessLayer.Models;
 using dotnet_grad.Interface;
 using dotnet_grad.Models;
-using dotnet_grad.Repository;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Resources.Queries
 {
-  public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<UserModel>>
+  public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<User>>
   {
     private readonly TestContext _testContext;
-    private readonly IUsers _userRepository;
+    private readonly IUserRepository _userRepository;
 
-    public GetAllUsersQueryHandler(TestContext testContext, IUsers userRepository)
+    public GetAllUsersQueryHandler(TestContext testContext, IUserRepository userRepository)
     {
       _testContext = testContext;
       _userRepository = userRepository;
     }
 
-    public async Task<List<UserModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken) =>
+    public async Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken) =>
         await _userRepository.GetUsersDetails();
   }
 }
