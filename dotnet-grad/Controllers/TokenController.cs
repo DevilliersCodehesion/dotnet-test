@@ -52,6 +52,7 @@ namespace dotnet_grad.Controllers
             new Claim("UserId", user.Id.ToString()),
             new Claim("DisplayName", user.Email),
             new Claim("Email", user.Email),
+            new Claim (ClaimTypes.Role, user.Role)
           };
 
           var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

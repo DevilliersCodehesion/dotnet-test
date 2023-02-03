@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_grad.Interface;
 using dotnet_grad.Models;
 using dotnet_grad.Repository;
 using MediatR;
@@ -11,8 +12,8 @@ namespace Resources.Commands
   public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserModel>
   {
     private readonly TestContext _testContext;
-    private readonly UserRepository _userRepository;
-    public CreateUserCommandHandler(TestContext testContext, UserRepository userRepository)
+    private readonly IUsers _userRepository;
+    public CreateUserCommandHandler(TestContext testContext, IUsers userRepository)
     {
       _testContext = testContext;
       _userRepository = userRepository;

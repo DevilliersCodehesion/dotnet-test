@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_grad.Models;
 
@@ -10,9 +11,11 @@ using dotnet_grad.Models;
 namespace dotnetgrad.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20230202111520_AddRoleToUsers")]
+    partial class AddRoleToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -80,9 +83,6 @@ namespace dotnetgrad.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("UserInfo");
@@ -104,6 +104,9 @@ namespace dotnetgrad.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("role")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("surname")

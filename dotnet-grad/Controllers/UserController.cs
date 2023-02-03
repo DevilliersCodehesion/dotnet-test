@@ -20,15 +20,14 @@ namespace dotnet_grad.Controllers
   public class UserController : ControllerBase
   {
     TestContext testContext;
-    private readonly IUsers _IUser;
     private readonly IMediator _mediator;
-    public UserController(TestContext _testContext, IUsers Iuser, IMediator mediator)
+    public UserController(TestContext _testContext, IMediator mediator)
     {
       testContext = _testContext;
-      _IUser = Iuser;
       _mediator = mediator;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserResponseDto>>> getUsers()
     {
@@ -36,7 +35,7 @@ namespace dotnet_grad.Controllers
       var response = await _mediator.Send(query);
       return Ok(response);
     }
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponseDto>> getUser(int id)
     {
@@ -49,30 +48,38 @@ namespace dotnet_grad.Controllers
       return Ok(response);
     }
 
+    [Authorize(Policy = "admin")]
     [HttpPost]
     public async Task<ActionResult<UserModel>> createUser([FromBody] UserRequestDto user)
     {
+      // if (!ModelState.IsValid)
+      // {
       var command = new CreateUserCommand(user);
       var response = await _mediator.Send(command);
 
       return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
+      // }
+
     }
 
-
+    [Authorize(Policy = "admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<UserModel>> updateUser(int id, [FromBody] UserRequestDto user)
     {
-      var command = new UpdateUserCommand(id, user);
-      var response = await _mediator.Send(command);
-      try
+      if (!ModelState.IsValid)
       {
-        return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
+        var command = new UpdateUserCommand(id, user);
+        var response = await _mediator.Send(command);
+        try
+        {
+          return Ok(new UserResponseDto(response.name, response.surname, response.full_name, response.email));
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+        {
+          return NotFound();
+        }
       }
-      catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
-      {
-        return NotFound();
-      }
-
+      return BadRequest();
     }
   }
 
