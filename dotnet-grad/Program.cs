@@ -1,12 +1,7 @@
-using System;
-using System.Linq;
-using dotnet_grad.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MediatR;
-using FluentValidation.AspNetCore;
-using System.Reflection;
 using Microsoft.OpenApi.Models;
 using DataAccessLayer.Models;
 using BusinessLogicLayers.Interfaces;
@@ -15,12 +10,6 @@ using dotnet_grad.Validators;
 using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// builder.Services.AddFluentValidation(conf =>
-// {
-//   conf.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
-//   conf.AutomaticValidationEnabled = false;
-// });
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<GetUserByIdValidator>();
