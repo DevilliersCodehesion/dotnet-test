@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using DataAccessLayer.Models;
 using BusinessLogicLayers.Interfaces;
 using BusinessLogicLayers.Repositories;
+using dotnet_grad.Validators;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,14 +22,11 @@ var builder = WebApplication.CreateBuilder(args);
 //   conf.AutomaticValidationEnabled = false;
 // });
 
-builder.Services.AddControllers().AddFluentValidation(options =>
-                {
-                  // Validate child properties and root collection elements
-                  options.ImplicitlyValidateChildProperties = true;
-                  options.ImplicitlyValidateRootCollectionElements = true;
-                  // Automatic registration of validators in assembly
-                  options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-                });
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetUserByIdValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
